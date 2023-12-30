@@ -4,7 +4,10 @@
   "description": "basic postgresql api built with express.js in node",
   "main": "run.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ts_built/start.js",
+    "watch": "npx tsc -w",
+    "build": "npx tsc"
   },
   "author": "Evelyn Welch",
   "license": "ISC",
