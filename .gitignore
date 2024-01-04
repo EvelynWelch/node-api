@@ -132,3 +132,4 @@ dist
 
 # ts builts
 ts_build
+env.ts
