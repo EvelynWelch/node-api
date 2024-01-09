@@ -130,6 +130,6 @@ dist
 .pnp.*
 
 
-# ts builts
+# project specific
 ts_build
 env.ts
