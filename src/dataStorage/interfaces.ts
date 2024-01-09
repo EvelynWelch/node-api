@@ -5,3 +5,8 @@ export interface iRestApi {
     put: Function,
     delete: Function,
 }
+
+export interface iDataStore {
+    isConnected: boolean,
+    
+}

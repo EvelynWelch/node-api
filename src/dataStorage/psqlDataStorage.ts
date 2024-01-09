@@ -5,13 +5,12 @@ impliments the RestApi interface.
 
 
 import pg from 'pg'
+import knex from 'knex'
 
 import { getEnvironmentVariable } from '../utils.js'
 
 // interfaces
-import { iRestApi } from './interfaces.js'
-
-
+import { iRestApi, iDataStore } from './interfaces.js'
 
 
 const db_connect_info = {
@@ -26,16 +25,18 @@ const client = new pg.Client(db_connect_info)
 
 await client.connect()
             .catch((err) => {
-                console.log("***** psqlDataStorage client.connect() *****")
+                console.log(`***** psqlDataStorage connecting to ${db_connect_info.host}:${db_connect_info.port} *****`)
             })
             .then(() => {
                 console.log("***** Connected to database *****")
             })
 
 
-export default class DataStorage implements iRestApi {
+export class DataStorage implements iRestApi, iDataStore {
+    isConnected = false
+    
     constructor(){
-
+   
     }
 
     get(){
@@ -51,29 +52,22 @@ export default class DataStorage implements iRestApi {
         return false
     }
 }
-
-
  
-let connect = async () => {
+
+export const connect = async () => {
    
    console.log("in connect")
 
    console.log("awaiting client")
    
    try {
-      console.log("try loop")
-      const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-      console.log(res.rows[0].message) // Hello world!
+    //   console.log("try loop")
+    //   const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+    //   console.log(res.rows[0].message) // Hello world!
    } catch (err) {
-      console.log("connection error: ")
+      console.error("connection error: ")
       console.error(err);
-   } finally {
-      console.log("finally hit")
-      // await client.end()
    }
 }
 
-// connect()
-
-export { connect }
 

@@ -23,6 +23,9 @@ PG_PORT=<port the database is running on>
 
 ```
 
+compile the typescript into javascript:
+ ```npm run build```
+
 then you can run it with:
 ```npm start```
 
