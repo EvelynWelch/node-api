@@ -5,7 +5,7 @@ impliments the RestApi interface.
 
 
 import pg from 'pg'
-import knex from 'knex'
+// import knex from 'knex'
 
 import { getEnvironmentVariable } from '../utils.js'
 
@@ -23,16 +23,16 @@ const db_connect_info = {
 
 const client = new pg.Client(db_connect_info)
 
-await client.connect()
-            .catch((err) => {
-                console.log(`***** psqlDataStorage connecting to ${db_connect_info.host}:${db_connect_info.port} *****`)
-            })
-            .then(() => {
-                console.log("***** Connected to database *****")
-            })
+// await client.connect()
+//             .catch((err) => {
+//                 console.log(`***** psqlDataStorage connecting to ${db_connect_info.host}:${db_connect_info.port} *****`)
+//             })
+//             .then(() => {
+//                 console.log("***** Connected to database *****")
+//             })
 
 
-export class DataStorage implements iRestApi, iDataStore {
+class DataStorage implements iRestApi {
     isConnected = false
     
     constructor(){
@@ -70,4 +70,6 @@ export const connect = async () => {
    }
 }
 
+
+export { DataStorage }
 
