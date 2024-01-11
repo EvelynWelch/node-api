@@ -5,7 +5,7 @@
   "main": "run.js",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "jest",
     "start": "node --env-file=.env --watch-path=./ts_build ts_build/start.js",
     "watch": "npx tsc -w",
     "build": "npx tsc"
@@ -19,9 +19,14 @@
     "pg": "^8.11.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
+    "@babel/preset-typescript": "^7.23.3",
     "@jest/globals": "^29.7.0",
     "@types/pg": "^8.10.9",
-    "ts-jest": "^29.1.1",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
     "typescript": "^5.3.3"
   }
+
 }

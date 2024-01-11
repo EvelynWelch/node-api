@@ -1,8 +1,10 @@
 export function getEnvironmentVariable(name: string): string {
-    // const value = process.env[name];
-    const value = '1'
+    const value = process.env[name];
+    
+    const errorString = "utils.getEnviromentVariable() error: " +  name + " is not an in process.env[]"
     if(!value) {
-        throw new Error(`Missing required environment variable "${name}"`);
+        console.error(errorString)
+        throw new Error("utils.getEnviromentVariable() error: enviroment variable not found in process.env[]");
     }
     return value;
 }
