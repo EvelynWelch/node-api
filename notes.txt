@@ -1,0 +1,28 @@
+Some notes about the software and the things I'm trying to do.
+
+The idea of the program is to be an easy way to create a database, and an associated api.
+
+The way I have decided to do this is to write two(?) jsons.
+One will define the database schema
+The other will define the api endpoints.
+
+Setting up and using the software will hopefully look something like:
+
+```
+npm install
+
+create .env file
+
+npm run build
+
+create database schema jsons
+create api jsons
+
+npm start
+```
+At this point you should be able to use the described api's to access the database.
+
+
+Some things I am thinking about now:
+? should each desired api/database thing have only one json file that has the api and db info ?
+? does there need to be two different api's, one for admin tasks, and for write tasks, and one for read ?
