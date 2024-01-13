@@ -1,0 +1,15 @@
+{
+    "tableName": "test_table",
+    "fields" : [
+        {"name": "test_int", "type": "integer"},
+        {"name": "test_text", "type": "text"},
+        {"name": "test_string", "type": "string"},
+        {"name": "test_string_length", "type": "string", "length": 10},
+        {"name": "test_bool", "type": "boolean"},
+        {"name": "test_date", "type": "date"},
+        {"name": "test_dateTime","type": "dateTime", "options": {"useTz": false, "precision": 6}},
+        {"name": "test_timeStamp", "type": "timeStamp"},
+        {"name": "test_uuid", "options": {}}    
+    ]
+    
+}

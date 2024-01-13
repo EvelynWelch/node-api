@@ -8,6 +8,7 @@
       "esModuleInterop": true,
       "outDir": "ts_build",
       "rootDir": "src",
-      "sourceMap": true
+      "sourceMap": true,
+      "resolveJsonModule": true,
     }
   }

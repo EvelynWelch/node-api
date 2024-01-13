@@ -1,0 +1,12 @@
+{
+    "tableName": "test_table",
+    "test_int": {"type": "integer"},
+    "test_text": {"type": "text"},
+    "test_string":{"type": "string"},
+    "test_string_length": {"type": "string", "length": 10},
+    "test_bool": {"type": "boolean"},
+    "test_date": {"type": "date"},
+    "test_dateTime": {"type": "dateTime", "options": {"useTz": false, "precision": 6}},
+    "test_timeStamp": {"type": "timeStamp"},
+    "test_uuid": {}
+}

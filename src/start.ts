@@ -1,4 +1,4 @@
-import { connect } from "./dataStorage/psqlDataStorage.js"
+
 import { startServer } from "./server.js"
 
 console.log("start script initializing.")
@@ -7,7 +7,7 @@ console.log("start script initializing.")
 startServer()
 
 // connect to the database
-connect()
+// connect()
 
 
 
