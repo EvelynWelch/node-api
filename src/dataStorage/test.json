@@ -9,7 +9,7 @@
         {"name": "test_date", "type": "date"},
         {"name": "test_dateTime","type": "dateTime", "options": {"useTz": false, "precision": 6}},
         {"name": "test_timeStamp", "type": "timeStamp"},
-        {"name": "test_uuid", "options": {}}    
+        {"name": "test_uuid", "type":"uuid", "options": {}}    
     ]
     
 }
