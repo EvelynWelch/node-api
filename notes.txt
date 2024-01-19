@@ -22,8 +22,6 @@ npm start
 ```
 At this point you should be able to use the described api's to access the database.
 
-! After some expirementing I'm not sure how to make knex.js create the tables from a json. 
-  I will look a little more, and also look at how querying objects that wern't created with knex looks.
 
 Some things I am thinking about now:
 ? should each desired api/database thing have only one json file that has the api and db info ?

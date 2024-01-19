@@ -69,7 +69,6 @@ import knex from "knex";
 import { db } from "./knexConnect.js";
 
 import testJson from "../../src/dataStorage/test.json" with { type: 'json' };
-import { test } from "@jest/globals";
 
 const name = { "name": "string" }
 // almost everything has a "name":"string" and a "nullable": "boolean" if nullable isn't set it defaults to false
@@ -99,6 +98,39 @@ const knexTypeFormats = {
 //       });
 //     }
 //   })
+
+
+
+
+knex.TableBuilder.extend("createTableFromJSON", function(tableData: any) {
+    const tableName = tableData.tableName;
+    const fields: Array<Object> = tableData.fields
+    
+    db.schema.hasTable(tableName).then((exists) => {
+        // if (exists) throw new Error("procJson.createTable() error: table already exists.");
+        // delete table if it exists for testing TODO: remove this when it's working
+        if (exists) {
+            console.log("TABLE FOUND, DELETING TABLE");
+            db.schema.dropTable(tableName);
+        }
+
+        
+        db.schema.createTable(tableName, function(table: knex.Knex.CreateTableBuilder) {
+            console.log("create table");
+            
+            for(let i = 0; i < fields.length; i++){
+                
+            }
+        });
+
+    });
+    
+    console.log('Custom Table Builder Function');
+    return this;
+});
+
+
+
 
 const createTable = async (tableData: any) => {
     // const data = JSON.parse(tableData);
@@ -137,7 +169,7 @@ const createTable = async (tableData: any) => {
             if (!type) {
                 throw new Error("procJson.createTable() error: entry.type not defined")
             }
-            return db.schema.createTable(tableName, function(table){
+            return db.schema.createTable(tableName, function(table: knex.Knex.CreateTableBuilder){
                 console.log("createTable")
                 // get the knex.table function to create the type from table
                 const fieldType = table[type as keyof typeof table]
@@ -159,6 +191,8 @@ const createTable = async (tableData: any) => {
                         }
                     }
                 }
+                
+
 
                 // let { fieldtype } = entry;
                 // delete entry.type
@@ -188,6 +222,9 @@ const createTable = async (tableData: any) => {
     })
 }
 
+
+
+
 const checkJSON = () => {
     // const data = JSON.parse(testJson);
     // console.log(testJson);
@@ -201,4 +238,4 @@ const checkJSON = () => {
 
 // checkJSON();
 
-createTable(testJson)
+// createTable(testJson)

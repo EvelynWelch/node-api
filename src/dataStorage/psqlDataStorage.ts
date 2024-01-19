@@ -57,9 +57,9 @@ async function tryKnex() {
     
 }
 
-tryKnex().then(() => {
-    console.log("maybe that worked")
-})
+// tryKnex().then(() => {
+//     console.log("maybe that worked")
+// })
 
 class DataStorage implements iRestApi {
     isConnected = false
