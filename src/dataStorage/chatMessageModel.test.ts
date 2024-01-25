@@ -9,20 +9,22 @@ const testTable = "test_messages";
 chatMessagesModel.tableName = testTable;
 
 
-async function setup() {
-    await chatMessagesModel._createTable()
-}
-
-async function teardown() {
-    await chatMessagesModel.db.schema.dropTable(testTable)    
-}
-
-beforeAll(() => {
-    return setup().then()
+beforeEach((done) => {
+    chatMessagesModel._createTable()
+    done()
 });
-afterAll(() => {
-    return teardown().then()
+afterEach((done) => {
+    chatMessagesModel.db.schema.dropTable(testTable)    
+    done()
 });
+
+// beforeEach(() => {
+//     return chatMessagesModel._createTable()
+// })
+
+// afterEach(() => {
+//     return chatMessagesModel.db.schema.dropTable(testTable)
+// })
 
 
 const testing = "chatMessageModel.chatMessagesModel"
@@ -34,7 +36,21 @@ const testMessage: imessage = {
     message: "this is a test message",
 }
 
-test('pass', () => {expect(true).toBe(true)})
+test(`${testing}._createTable() creates a table if one doesn't exist`, async() => {
+    const preTableExists = await chatMessagesModel.db.schema.hasTable(chatMessagesModel.tableName);
+    if(preTableExists){
+        console.log("deleting setup table")
+        await chatMessagesModel.db.schema.dropTable(testTable)    
+    }
+    await chatMessagesModel._createTable();
+    const tableExists = await chatMessagesModel.db.schema.hasTable(chatMessagesModel.tableName);
+    expect(tableExists).toBe(true);
+})
+
+test(`${testing}._createTable() doesn't try and create a table if one exists`, async() => {
+    const tableExists = await chatMessagesModel.db.schema.hasTable(testTable)
+    chatMessagesModel._createTable();
+})
 
 test(`${testing}._createTable() creates a table named after this.tableName`, async() => {
     const tableExists = await chatMessagesModel.db.schema.hasTable(chatMessagesModel.tableName);

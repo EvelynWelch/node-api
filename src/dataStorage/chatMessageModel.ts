@@ -13,7 +13,7 @@ interface imessage {
 class ChatMessageModel {
     db: knex.Knex;
     tableName: string;
-    hasTable: boolean;
+    hasTable: boolean = false;
     ready: boolean;
 
     constructor(db: knex.Knex, tableName?: string) {
@@ -21,6 +21,7 @@ class ChatMessageModel {
         this.tableName ? tableName : 'chat_messages';
         // this._setHasTable();
         this._createTable();
+        // this.hasTable = this._createTable();
     }
 
     async _setHasTable() {
@@ -31,10 +32,11 @@ class ChatMessageModel {
     }
 
     async _createTable() {
+        // TODO: make this return true / false if it created a table or not.
         this.hasTable = await this.db.schema.hasTable(this.tableName)
-        if(this.hasTable) return null;
+        if (this.hasTable) return
 
-        return this.db.schema.createTable(this.tableName, (table) => {
+        await this.db.schema.createTable(this.tableName, (table) => {
             // define the table here
             table.increments('id');
             table.string('user_id');
@@ -43,28 +45,32 @@ class ChatMessageModel {
             table.string('channel');
             // table.timestamp('created_at');
         })
-            .then(() => { console.log("table: " + this.tableName + " has been created") })
-            .catch(error => { console.error(error) })
-    }
-
-    async insert(message: imessage) {
-        let success = false;
-        await this.db.transaction(async action => {
-            const now = Date.now();
-            const ts = new Date(now);
-            // message.timestamp = ts.toUTCString()
-            await action(this.tableName).insert(message)
-        })
-            .then(() => {
-                console.log("success = true")
-                success = true
-            })
+            .then(() => { this.hasTable = true })
             .catch(error => {
-                success = false
                 console.error(error)
             })
-        return success
-    }
+        
+    }   
+    
+
+    async insert(message: imessage) {
+    let success = false;
+    await this.db.transaction(async action => {
+        const now = Date.now();
+        const ts = new Date(now);
+        // message.timestamp = ts.toUTCString()
+        await action(this.tableName).insert(message)
+    })
+        .then(() => {
+            console.log("success = true")
+            success = true
+        })
+        .catch(error => {
+            success = false
+            console.error(error)
+        })
+    return success
+}
 }
 
 const chatMessagesModel = new ChatMessageModel(db);
