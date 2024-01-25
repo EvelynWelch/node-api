@@ -1,22 +1,41 @@
-import { test, describe, expect } from "@jest/globals";
+import { test, describe, expect, beforeAll, afterAll, beforeEach, afterEach } from "@jest/globals";
 
-import { db } from "./knexConnect.js";
+// import { db } from "./knexConnect.js";
 import { chatMessagesController, imessage } from "./chatMessageModel.js";
 
 // there has to be a better way to do this, but to lazy to find it right now
 // rename the table and create a new table for test messages.
 const testTable = "test_messages";
+chatMessagesController.tableName = testTable;
+
 
 async function setup() {
-    chatMessagesController.tableName = testTable;
     await chatMessagesController._createTable()
 }
 
 async function teardown() {
-    await db.schema.dropTable(testTable)    
+    await chatMessagesController.db.schema.dropTable(testTable)    
 }
 
-setup().then()
+// setup().then()
+
+beforeAll(() => {
+    // setup().then(() => {done()})
+    // setup().finally(() => done())
+    return setup().then()
+});
+afterAll(() => {
+    // teardown().finally(() => {done()})
+    return teardown().then()
+});
+
+// beforeEach(() => {
+//     return setup().then();
+// });
+
+// afterEach(() => {
+//     return teardown().then();
+// })
 
 const testing = "chatMessageModel.chatMessageController"
 
@@ -27,10 +46,14 @@ const testMessage: imessage = {
     message: "this is a test message",
 }
 
+test('pass', () => {expect(true).toBe(true)})
+
+
 test(`${testing}._createTable() creates a table named after this.tableName`, async() => {
-    console.log(chatMessagesController.tableName)
-    const tableExists = await db.schema.hasTable(chatMessagesController.tableName);
+    // await setup();
+    const tableExists = await chatMessagesController.db.schema.hasTable(chatMessagesController.tableName);
     expect(tableExists).toBe(true);
+    // await teardown();
 })
 
 test(`${testing}.insert() returns true when successfull`, async () => {
@@ -38,14 +61,8 @@ test(`${testing}.insert() returns true when successfull`, async () => {
     expect(success).toBe(true)
 })
 
-// test(`${testing}.insert() returns false when unsuccessfull`, async () => {
-//     // let tm = testMessage
-//     // tm.timestamp = "this should make it fail???"
-//     const success = await  chatMessagesController.insert(tm)
-//     expect(success).toBe(false)
 
-// })
 
-teardown().then();
+// teardown().then();
 
 // db.schema.dropTable(testTable).then()

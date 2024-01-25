@@ -6,9 +6,12 @@
       "removeComments": true,
       "preserveConstEnums": true,
       "esModuleInterop": true,
-      "outDir": "ts_build",
+      "outDir": "compiled",
       "rootDir": "src",
       "sourceMap": true,
       "resolveJsonModule": true,
-    }
+    },
+    "exclude": [
+      "src/**/*.test.ts"
+    ]
   }

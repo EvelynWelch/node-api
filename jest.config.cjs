@@ -16,5 +16,6 @@ module.exports = {
   moduleNameMapper: {
     '(.+)\\.js': '$1'
   },
+  modulePathIgnorePatterns: ["compiled"],
   extensionsToTreatAsEsm: ['.ts']
 };

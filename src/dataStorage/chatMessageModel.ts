@@ -23,7 +23,7 @@ class ChatMessageController {
     }
 
     async _setHasTable() {
-        db.schema.hasTable(this.tableName).then((exists) => {
+        this.db.schema.hasTable(this.tableName).then((exists) => {
             this.hasTable = exists;
             // if (!exists) {
             //     this._createTable()
@@ -36,8 +36,9 @@ class ChatMessageController {
     async _createTable() {
         if(this.hasTable) return null;
 
-        return db.schema.createTable(this.tableName, (table) => {
+        return this.db.schema.createTable(this.tableName, (table) => {
             // define the table here
+            table.increments('id');
             table.string('user_id');
             table.string('display_name');
             table.string('message');
@@ -50,20 +51,20 @@ class ChatMessageController {
 
     async insert(message: imessage) {
         let success = false;
-        db.transaction(async action => {
+        await this.db.transaction(async action => {
             const now = Date.now();
             const ts = new Date(now);
             // message.timestamp = ts.toUTCString()
-            return await action(this.tableName).insert(message)
+            await action(this.tableName).insert(message)
         })
             .then(() => {
+                console.log("success = true")
                 success = true
             })
             .catch(error => {
                 success = false
                 console.error(error)
             })
-
         return success
     }
 }
@@ -77,7 +78,5 @@ const testMessage: imessage = {
     message: "this is a test message",
 }
 
-await chatMessagesController.insert(testMessage);
-console.log("end")
 // return 0
 export { chatMessagesController, imessage }
