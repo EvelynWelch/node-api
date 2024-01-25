@@ -4,8 +4,6 @@ module.exports = {
   testEnvironment: 'node',
   transform: {
     '\\.[jt]sx?$': 'ts-jest',
-    
-  
   },
   globals: {
     'ts-jest': {

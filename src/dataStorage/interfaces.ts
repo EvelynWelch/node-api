@@ -1,3 +1,6 @@
+import knex from "knex"
+
+
 /* An interface for data storage classes that describes a rest api. */ 
 export interface iRestApi {
     get: Function,
@@ -9,4 +12,10 @@ export interface iRestApi {
 export interface iDataStore {
     isConnected: boolean,
     
+}
+
+
+export interface iModel {
+    db: knex.Knex,
+    tableName: string,
 }

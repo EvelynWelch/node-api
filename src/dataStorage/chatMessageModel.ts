@@ -10,30 +10,28 @@ interface imessage {
     // timestamp?: string,
 }
 
-class ChatMessageController {
+class ChatMessageModel {
     db: knex.Knex;
-    tableName: string = 'chat_message';
+    tableName: string;
     hasTable: boolean;
     ready: boolean;
 
     constructor(db: knex.Knex, tableName?: string) {
         this.db = db;
-        this.tableName ? tableName : 'chat_message';
-        this._setHasTable();
+        this.tableName ? tableName : 'chat_messages';
+        // this._setHasTable();
+        this._createTable();
     }
 
     async _setHasTable() {
-        this.db.schema.hasTable(this.tableName).then((exists) => {
-            this.hasTable = exists;
-            // if (!exists) {
-            //     this._createTable()
-            //         .then(() => this.ready = true)
-            //         .catch((error) => { console.error(error) })
-            // }
-        }).catch((error) => { console.error(error) })
+        this.hasTable = await this.db.schema.hasTable(this.tableName)
+        // this.db.schema.hasTable(this.tableName).then((exists) => {
+        //     this.hasTable = exists;
+        // }).catch((error) => { console.error(error) })
     }
 
     async _createTable() {
+        this.hasTable = await this.db.schema.hasTable(this.tableName)
         if(this.hasTable) return null;
 
         return this.db.schema.createTable(this.tableName, (table) => {
@@ -69,14 +67,6 @@ class ChatMessageController {
     }
 }
 
-const chatMessagesController = new ChatMessageController(db);
+const chatMessagesModel = new ChatMessageModel(db);
 
-const testMessage: imessage = {
-    display_name: "testUser",
-    user_id: "1",
-    channel: "testChannel",
-    message: "this is a test message",
-}
-
-// return 0
-export { chatMessagesController, imessage }
+export { chatMessagesModel, imessage }

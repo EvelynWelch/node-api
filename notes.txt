@@ -1,3 +1,5 @@
+TODO: switch knex to use pools instead of a single connection.
+
 Some notes about the software and the things I'm trying to do.
 
 The idea of the program is to be an easy way to create a database, and an associated api.
