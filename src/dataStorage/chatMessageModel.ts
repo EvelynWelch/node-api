@@ -2,6 +2,9 @@ import knex from "knex"
 
 import { db } from './knexConnect.js'
 
+import { Queue } from '../utils.js';
+
+
 interface imessage {
     display_name: string,
     user_id: string,
@@ -34,7 +37,7 @@ class ChatMessageModel {
     async _createTable() {
         // TODO: make this return true / false if it created a table or not.
         this.hasTable = await this.db.schema.hasTable(this.tableName)
-        if (this.hasTable) return 
+        if (this.hasTable) return
         await this.db.schema.createTable(this.tableName, (table) => {
             // define the table here
             table.increments('id');
@@ -60,7 +63,6 @@ class ChatMessageModel {
             await action(this.tableName).insert(message)
         })
             .then(() => {
-                console.log("success = true")
                 success = true
             })
             .catch(error => {
@@ -71,6 +73,42 @@ class ChatMessageModel {
     }
 }
 
+
+
 const chatMessagesModel = new ChatMessageModel(db);
+
+const queue = new Queue<imessage>();
+
+const errorQueue = new Queue<imessage>();
+
+const QUEUE_WAIT_TIME = 500
+
+function processQueue() {
+
+    function _processInsert() {
+        const message = queue.dequeue()
+        const inserted = chatMessagesModel.insert(message)
+        if (!inserted) {
+            console.error("failed to insert message")
+            errorQueue.enqueue(message)
+        }
+    }
+
+    while (!queue.isEmpty) {
+        setTimeout(_processInsert, QUEUE_WAIT_TIME)
+    }
+}
+
+function queueInfo() {
+    const queued = queue.size();
+    const errors = errorQueue.size();
+    console.log(`queued: ${queued}, errors: ${errors}`);
+    return [queued, errors]
+}
+
+export function enqueueMessage(message: imessage) {
+    queue.enqueue(message)
+}
+
 
 export { chatMessagesModel, imessage }
