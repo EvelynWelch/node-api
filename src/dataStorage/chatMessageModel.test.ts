@@ -13,18 +13,11 @@ beforeEach((done) => {
     chatMessagesModel._createTable()
     done()
 });
+
 afterEach((done) => {
     chatMessagesModel.db.schema.dropTable(testTable)    
     done()
 });
-
-// beforeEach(() => {
-//     return chatMessagesModel._createTable()
-// })
-
-// afterEach(() => {
-//     return chatMessagesModel.db.schema.dropTable(testTable)
-// })
 
 
 const testing = "chatMessageModel.chatMessagesModel"

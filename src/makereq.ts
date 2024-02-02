@@ -7,9 +7,6 @@ const testMessage = {
     message: "this is a test message",
 }
 
-// axios.put('/chat-messages', testMessage).then((res) => {
-//     console.log(res)
-// })
 
 const baseURL = 'http://localhost:8008'
 
