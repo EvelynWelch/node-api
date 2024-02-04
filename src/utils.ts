@@ -15,6 +15,12 @@ export class Queue<T> {
     constructor(){
         this.items = [];
     }
+    get size() : number {
+        return this.items.length
+    }
+    get isEmpty(): boolean {
+        return this.items.length === 0;
+    }
     enqueue(item: T) {
         this.items.push(item)
     }
@@ -24,11 +30,10 @@ export class Queue<T> {
     peek(): T {
         return this.items[0]
     }
-    size(): number {
-        return this.items.length
-    }
-    get isEmpty(): boolean {
-        return this.items.length === 0;
+    
+    getItems(): Array<T> {
+        // const clone = this.items.map((x) => x)
+        return this.items.map((x) => x)
     }
 }
 

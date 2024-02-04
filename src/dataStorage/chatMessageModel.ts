@@ -23,8 +23,10 @@ class ChatMessageModel {
 
     constructor(db: knex.Knex, tableName?: string, obs?: Observer) {
         this.db = db;
-        this.tableName ? tableName : 'chat_messages';
-        this.obs ? obs : new Observer();
+        this.tableName = 'chat_message';
+        // this.tableName ? tableName : 'chat_messages';
+        // this.obs ? obs : new Observer();
+        this.obs = new Observer();
         this.observerables = [
             'beforeInsert',
             'afterInsert',
@@ -64,7 +66,7 @@ class ChatMessageModel {
     private fireAfter_createTable() {
         this.obs.fire('before_createTable', undefined)
     }
-    
+        
     async _createTable() {
         this.fireBefore_createTable()
 
@@ -148,8 +150,8 @@ export function processQueue() {
 }
 
 function queueInfo() {
-    const queued = queue.size();
-    const errors = errorQueue.size();
+    const queued = queue.size;
+    const errors = errorQueue.size;
     console.log(`queued: ${queued}, errors: ${errors}`);
     return [queued, errors]
 }
