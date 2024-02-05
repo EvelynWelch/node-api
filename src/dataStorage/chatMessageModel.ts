@@ -13,6 +13,7 @@ interface imessage {
     // timestamp?: string,
 }
 
+
 class ChatMessageModel {
     db: knex.Knex;
     obs: Observer;
