@@ -10,8 +10,8 @@ const testMessage = {
     message: "this is a test message",
 }
 
-const baseURL = 'http://localhost:8008'
-
+const baseURL = 'http://localhost:5432'
+// const baseURL = '127.0.2:5432'
 async function q() {
     try{
         const resp = await axios.get(baseURL)

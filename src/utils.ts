@@ -22,6 +22,7 @@ export class Queue<T> {
         return this.items.length === 0;
     }
     enqueue(item: T) {
+        console.log("enqueueing")
         this.items.push(item)
     }
     dequeue(): T {

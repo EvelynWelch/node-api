@@ -100,7 +100,7 @@ class ChatMessageModel {
 
     async insert(message: imessage) {
         this.fireBeforeInsert(message)
-
+        console.log(`inserting: ${message}`);
         let success = false;
         await this.db.transaction(async action => {
             const now = Date.now();
