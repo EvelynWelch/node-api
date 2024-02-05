@@ -47,5 +47,4 @@ client.on('message', (channel: string, tags: any, message: string, self: any) =>
     };
     cmPut(data);
     console.log({...tags});
-
 });
