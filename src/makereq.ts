@@ -10,7 +10,7 @@ const testMessage = {
     message: "this is a test message",
 }
 
-const baseURL = 'http://localhost:5432'
+const baseURL = 'http://localhost:8008'
 // const baseURL = '127.0.2:5432'
 async function q() {
     try{
@@ -33,7 +33,7 @@ async function cmPut (insert: imessage) {
 
 
 const client = new tmi.Client({
-	channels: [ 'supertf' ]
+	channels: [ 'supertf','emongg' ]
 });
 
 client.connect();
@@ -46,5 +46,5 @@ client.on('message', (channel: string, tags: any, message: string, self: any) =>
         message: message,
     };
     cmPut(data);
-    console.log({...tags});
+    // console.log({...tags});
 });

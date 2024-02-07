@@ -5,7 +5,7 @@ import { db } from './knexConnect.js'
 import { Queue, Observer } from '../utils.js';
 
 
-interface imessage {
+export interface imessage {
     display_name: string,
     user_id: string,
     channel: string,
@@ -22,9 +22,9 @@ class ChatMessageModel {
     ready: boolean;
     observerables: string[];
 
-    constructor(db: knex.Knex, tableName?: string, obs?: Observer) {
+    constructor(db: knex.Knex) {
         this.db = db;
-        this.tableName = 'chat_message';
+        this.tableName = 'chat_messages';
         // this.tableName ? tableName : 'chat_messages';
         // this.obs ? obs : new Observer();
         this.obs = new Observer();
@@ -50,7 +50,7 @@ class ChatMessageModel {
         this.obs.subscribe(event, callback)
     }
 
-    unsubscribe(event: string, callback: Function){
+    unsubscribe(event: string, callback: Function) {
         this.obs.unsubscribe(event, callback)
     }
 
@@ -61,13 +61,13 @@ class ChatMessageModel {
         // }).catch((error) => { console.error(error) })
     }
 
-    private fireBefore_createTable(){
+    private fireBefore_createTable() {
         this.obs.fire('after_createTable', undefined)
     }
     private fireAfter_createTable() {
         this.obs.fire('before_createTable', undefined)
     }
-        
+
     async _createTable() {
         this.fireBefore_createTable()
 
@@ -86,7 +86,7 @@ class ChatMessageModel {
             .catch(error => {
                 console.error(error)
             })
-        
+
         this.fireAfter_createTable()
     }
 
@@ -94,13 +94,13 @@ class ChatMessageModel {
     private fireBeforeInsert(message: imessage) {
         this.obs.fire('beforeInsert', message)
     }
-    private fireAfterInsert(message: imessage){
+    private fireAfterInsert(message: imessage) {
         this.obs.fire('afterInsert', message)
     }
 
     async insert(message: imessage) {
         this.fireBeforeInsert(message)
-        console.log(`inserting: ${message}`);
+        // console.log(`inserting: ${message}`);
         let success = false;
         await this.db.transaction(async action => {
             const now = Date.now();
@@ -122,9 +122,7 @@ class ChatMessageModel {
 }
 
 
-
-const chatMessagesModel = new ChatMessageModel(db);
-
+export const chatMessagesModel = new ChatMessageModel(db);
 
 
 
@@ -132,11 +130,11 @@ const queue = new Queue<imessage>();
 
 const errorQueue = new Queue<imessage>();
 
-const QUEUE_WAIT_TIME = 500
+const QUEUE_WAIT_TIME = 200;
 
 export function processQueue() {
-
     function _processInsert() {
+        console.log("queue attempting insert");
         const message = queue.dequeue()
         const inserted = chatMessagesModel.insert(message)
         if (!inserted) {
@@ -144,13 +142,14 @@ export function processQueue() {
             errorQueue.enqueue(message)
         }
     }
-
-    while (!queue.isEmpty) {
-        setTimeout(_processInsert, QUEUE_WAIT_TIME)
+    if (!queue.isEmpty) {
+        _processInsert();
     }
+
+    setTimeout(processQueue, QUEUE_WAIT_TIME)
 }
 
-function queueInfo() {
+export function queueInfo() {
     const queued = queue.size;
     const errors = errorQueue.size;
     console.log(`queued: ${queued}, errors: ${errors}`);
@@ -158,8 +157,10 @@ function queueInfo() {
 }
 
 export function enqueueMessage(message: imessage) {
+
     queue.enqueue(message)
+    console.log(`queue.size: ${queue.size}`);
 }
 
 
-export { chatMessagesModel, imessage }
+// export { chatMessagesModel, imessage }

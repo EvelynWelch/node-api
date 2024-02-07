@@ -4,7 +4,7 @@ import express from 'express'
 import { getEnvironmentVariable } from './utils.js';
 
 // import { chatMessagesModel } from './dataStorage/chatMessageModel.js';
-import { enqueueMessage } from './dataStorage/chatMessageModel.js';
+import { chatMessagesModel, enqueueMessage, processQueue } from './dataStorage/chatMessageModel.js';
 
 const app = express()
 const port = getEnvironmentVariable('EXPRESS_PORT')
@@ -17,7 +17,9 @@ app.use(express.json());
 app.put('/chat-messages', (req: Request, res: Response) => {
   // req.params
   const success = enqueueMessage(req.body);
-  res.send(success)
+  // console.log("request recieved")
+  // const success = chatMessagesModel.insert(req.body);
+  res.send("request recived")
 })
 
 

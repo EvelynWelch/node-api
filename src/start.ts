@@ -11,11 +11,3 @@ processQueue()
 
 
 
-
-
-// connect to the database
-// connect()
-
-
-
-

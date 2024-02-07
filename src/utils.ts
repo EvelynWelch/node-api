@@ -22,10 +22,11 @@ export class Queue<T> {
         return this.items.length === 0;
     }
     enqueue(item: T) {
-        console.log("enqueueing")
+        // console.log("enqueueing")
         this.items.push(item)
     }
     dequeue(): T {
+        console.log(`dequeued: ${this.size -1} elements remaining`)
         return this.items.shift()
     }
     peek(): T {
@@ -51,13 +52,14 @@ export class Observer {
         return this.observers.has(event);
     }
     private updateSubscribers(event: string, subscribers: Array<Function>) {
-        if(!this.observers.has(event)) return false;
+        if (!this.observers.has(event)) return false;
         this.observers.set(event, subscribers);
     }
+
     registerEvent(event: string): boolean {
         if (this.observers.has(event)) return false;
-            this.observers.set(event, [])
-            return true;
+        this.observers.set(event, [])
+        return true;
     }
 
     unregisterEvent(event: string): boolean {
@@ -67,7 +69,7 @@ export class Observer {
     }
 
     subscribe(event: string, callback: Function): boolean {
-        if (!this.observers.has(event)) return false;   
+        if (!this.observers.has(event)) return false;
         this.observers.get(event).push(callback);
         return true;
     }
@@ -75,10 +77,10 @@ export class Observer {
     unsubscribe(event: string, callback: Function): boolean {
         if (!this.observers.has(event)) { return false; }
         const subscribers = this.observers.get(event)
-        let callbackRemoved = false;   
+        let callbackRemoved = false;
         const updated = subscribers.filter((elem) => {
             if (elem === callback) {
-                callbackRemoved = true;   
+                callbackRemoved = true;
                 return false;
             }
             return true;
@@ -92,7 +94,7 @@ export class Observer {
         const subscribers = this.observers.get(event)
         let returnArgs = args
         subscribers.forEach((callback) => {
-           returnArgs = callback(args)
+            returnArgs = callback(args)
         })
         return returnArgs
     }
