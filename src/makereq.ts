@@ -1,36 +1,26 @@
 import axios from "axios"
 import tmi from "tmi.js";
 import { imessage } from "./dataStorage/chatMessageModel.js";
-
+import { getEnvironmentVariable } from "./utils.js";
 
 const testMessage = {
-    display_name: "testUser",
+    display_name: "test",
     user_id: "1",
     channel: "testChannel",
     message: "this is a test message",
 }
 
-const baseURL = 'http://localhost:5432'
-// const baseURL = '127.0.2:5432'
-async function q() {
-    try{
-        const resp = await axios.get(baseURL)
-        console.log(resp)
-    } catch (error) {
-        console.log(error)
-    }
-}
+const baseURL = 'http://localhost:' + getEnvironmentVariable('EXPRESS_PORT');
 
-async function cmPut (insert: imessage) {
-    try { 
-        
+
+async function chatMessagePut (insert: imessage) {
+    try {  
         const resp = await axios.put(`${baseURL}/chat-messages`, insert)
         console.log(resp.data)
     } catch (error) {
         console.log(error)
     }
 }
-
 
 const client = new tmi.Client({
 	channels: [ 'supertf' ]
@@ -45,6 +35,7 @@ client.on('message', (channel: string, tags: any, message: string, self: any) =>
         channel: channel,
         message: message,
     };
-    cmPut(data);
-    console.log({...tags});
+    chatMessagePut(data);
+    // console.log({...tags});
 });
+

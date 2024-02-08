@@ -29,6 +29,7 @@ const testMessage: imessage = {
     message: "this is a test message",
 }
 
+
 test(`${testing}._createTable() creates a table if one doesn't exist`, async() => {
     const preTableExists = await chatMessagesModel.db.schema.hasTable(chatMessagesModel.tableName);
     if(preTableExists){

@@ -8,7 +8,8 @@
     "test": "node --env-file=.env ./node_modules/jest/bin/jest.js",
     "start": "node --env-file=.env --watch-path=./compiled compiled/start.js",
     "watch": "npx tsc -w",
-    "build": "npx tsc"
+    "build": "npx tsc",
+    "makereq": "node --env-file=.env ./compiled/makereq.js"
   },
   "author": "Evelyn Welch",
   "license": "ISC",

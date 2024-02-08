@@ -5,7 +5,7 @@ import { db } from './knexConnect.js'
 import { Queue, Observer } from '../utils.js';
 
 
-interface imessage {
+export interface imessage {
     display_name: string,
     user_id: string,
     channel: string,
@@ -24,7 +24,7 @@ class ChatMessageModel {
 
     constructor(db: knex.Knex, tableName?: string, obs?: Observer) {
         this.db = db;
-        this.tableName = 'chat_message';
+        this.tableName = 'chat_messages';
         // this.tableName ? tableName : 'chat_messages';
         // this.obs ? obs : new Observer();
         this.obs = new Observer();
@@ -36,7 +36,7 @@ class ChatMessageModel {
         ]
         this.prepareObs()
         // this._setHasTable();
-        // this._createTable();
+        this._createTable();
         // this.hasTable = this._createTable();
     }
 
@@ -123,7 +123,7 @@ class ChatMessageModel {
 
 
 
-const chatMessagesModel = new ChatMessageModel(db);
+export const chatMessagesModel = new ChatMessageModel(db);
 
 
 
@@ -160,6 +160,3 @@ function queueInfo() {
 export function enqueueMessage(message: imessage) {
     queue.enqueue(message)
 }
-
-
-export { chatMessagesModel, imessage }
