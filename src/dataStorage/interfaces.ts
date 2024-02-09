@@ -14,7 +14,6 @@ export interface iDataStore {
     
 }
 
-
 export interface iModel {
     db: knex.Knex,
     tableName: string,

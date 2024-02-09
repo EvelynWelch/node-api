@@ -19,9 +19,11 @@ app.use(express.json());
 //   httpLogger.info({request: req, response: res})
 // })
 
-
+let count = 0;
 app.put('/chat-messages', (req: Request, res: Response) => {
   enqueueMessage(req.body)
+  count++
+  if (count % 500 === 0) res.send(count + " messages recieved")
 })
 
 app.get('/chat-messages', (req: Request, res: Response) => {

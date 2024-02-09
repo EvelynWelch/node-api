@@ -57,9 +57,6 @@ class ChatMessageModel {
 
     async _setHasTable() {
         this.hasTable = await this.db.schema.hasTable(this.tableName)
-        // this.db.schema.hasTable(this.tableName).then((exists) => {
-        //     this.hasTable = exists;
-        // }).catch((error) => { console.error(error) })
     }
 
     private fireBefore_createTable() {
@@ -86,7 +83,6 @@ class ChatMessageModel {
             .then(() => { this.hasTable = true })
             .catch(error => {
                 logger.error(error, "ChatMessageModel._createTable() failed to create table: " + this.tableName)
-                console.error(error)
             })
 
         this.fireAfter_createTable()
@@ -131,7 +127,7 @@ const queue = new Queue<imessage>();
 
 const errorQueue = new Queue<imessage>();
 
-const QUEUE_WAIT_TIME = 100;
+const QUEUE_DELAY_MS = Number(getEnvironmentVariable("QUEUE_DELAY_MS")) || 100;
 
 function _processInsert() {
     logger.trace("_processInsert()");
@@ -147,18 +143,17 @@ export function processQueue() {
     if (!queue.isEmpty) {
         _processInsert();
     }
-    setTimeout(processQueue, QUEUE_WAIT_TIME)
+    // TODO: test to see if this setTimeout will pause the ability to enqueue requests
+    setTimeout(processQueue, QUEUE_DELAY_MS)
 }
 
 export function getQueueInfo() {
     const queued = queue.size;
     const errors = errorQueue.size;
-    console.log(`queued: ${queued}, errors: ${errors}`);
     return [queued, errors]
 }
 
 export function enqueueMessage(message: imessage) {
-
     queue.enqueue(message)
     logger.trace("enqueueMessage()")
 }

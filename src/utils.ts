@@ -4,10 +4,11 @@ import { logger } from "./logger.js";
 export function getEnvironmentVariable(name: string): string {
     // logger.trace(`getEnvironmentVariable(${name}) called`)
     const value = process.env[name];
-    const errorString = "utils.getEnviromentVariable() error: " + name + " is not an in process.env[]"
+    const logMessage = "utils.getEnviromentVariable() error: " + name + " is not an in process.env[]"
     if (!value) {
-        const err = new Error(errorString);
-        logger.error(err, `process variable: ${name} is not set`);
+        const err = new Error(".env variable not found");
+        logger.warn(err, logMessage)
+        // logger.error(err, `process variable: ${name} is not set`);
         throw err
     }
     return value;
@@ -29,7 +30,6 @@ export class Queue<T> {
         this.items.push(item)
     }
     dequeue(): T {
-        console.log(`dequeued: ${this.size -1} elements remaining`)
         return this.items.shift()
     }
     peek(): T {

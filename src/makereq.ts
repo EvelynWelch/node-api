@@ -12,18 +12,19 @@ const testMessage = {
 
 const baseURL = 'http://localhost:' + getEnvironmentVariable('EXPRESS_PORT');
 
-
+let errCount = 0;
 async function chatMessagePut (insert: imessage) {
     try {  
         const resp = await axios.put(`${baseURL}/chat-messages`, insert)
-        console.log(resp.data)
+        console.log(resp)
     } catch (error) {
-        console.log(error)
+        errCount++
+        console.log(errCount + " errors") 
     }
 }
 
 const client = new tmi.Client({
-	channels: [ 'supertf', 'iitztimmy' ]
+	channels: [ 'supertf', 'iitztimmy', 'aceu', '39daph', 'scarra' ]
 });
 
 client.connect();
