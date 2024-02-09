@@ -23,11 +23,11 @@ async function chatMessagePut (insert: imessage) {
 }
 
 const client = new tmi.Client({
-	channels: [ 'supertf' ]
+	channels: [ 'supertf', 'iitztimmy' ]
 });
 
 client.connect();
-
+let count = 0;
 client.on('message', (channel: string, tags: any, message: string, self: any) => {
     const data = {
         display_name: tags['display-name'],
@@ -36,6 +36,8 @@ client.on('message', (channel: string, tags: any, message: string, self: any) =>
         message: message,
     };
     chatMessagePut(data);
+    count++
+    console.log(count);
     // console.log({...tags});
 });
 

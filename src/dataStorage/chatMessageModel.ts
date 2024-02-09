@@ -2,7 +2,8 @@ import knex from "knex"
 
 import { db } from './knexConnect.js'
 
-import { Queue, Observer } from '../utils.js';
+import { Queue, Observer, getEnvironmentVariable } from '../utils.js';
+import { logger } from "../logger.js";
 
 
 export interface imessage {
@@ -50,7 +51,7 @@ class ChatMessageModel {
         this.obs.subscribe(event, callback)
     }
 
-    unsubscribe(event: string, callback: Function){
+    unsubscribe(event: string, callback: Function) {
         this.obs.unsubscribe(event, callback)
     }
 
@@ -61,13 +62,13 @@ class ChatMessageModel {
         // }).catch((error) => { console.error(error) })
     }
 
-    private fireBefore_createTable(){
+    private fireBefore_createTable() {
         this.obs.fire('after_createTable', undefined)
     }
     private fireAfter_createTable() {
         this.obs.fire('before_createTable', undefined)
     }
-        
+
     async _createTable() {
         this.fireBefore_createTable()
 
@@ -84,9 +85,10 @@ class ChatMessageModel {
         })
             .then(() => { this.hasTable = true })
             .catch(error => {
+                logger.error(error, "ChatMessageModel._createTable() failed to create table: " + this.tableName)
                 console.error(error)
             })
-        
+
         this.fireAfter_createTable()
     }
 
@@ -94,13 +96,13 @@ class ChatMessageModel {
     private fireBeforeInsert(message: imessage) {
         this.obs.fire('beforeInsert', message)
     }
-    private fireAfterInsert(message: imessage){
+    private fireAfterInsert(message: imessage) {
         this.obs.fire('afterInsert', message)
     }
 
     async insert(message: imessage) {
         this.fireBeforeInsert(message)
-        console.log(`inserting: ${message}`);
+        logger.trace('ChatMessageModel.insert()')
         let success = false;
         await this.db.transaction(async action => {
             const now = Date.now();
@@ -113,9 +115,8 @@ class ChatMessageModel {
             })
             .catch(error => {
                 success = false
-                console.error(error)
+                logger.error({ error: error, data: message }, "ChatMessageModel.insert() failed to insert message")
             })
-
         this.fireAfterInsert(message)
         return success
     }
@@ -132,25 +133,36 @@ const queue = new Queue<imessage>();
 
 const errorQueue = new Queue<imessage>();
 
-const QUEUE_WAIT_TIME = 500
+const QUEUE_WAIT_TIME = Number(getEnvironmentVariable("QUEUE_DELAY_MS")) || 100;
+
+console.log(QUEUE_WAIT_TIME)
+
+let largestQueueSize = 0;
+
+function _processInsert() {
+
+    const message = queue.dequeue()
+    const inserted = chatMessagesModel.insert(message)
+    if (!inserted) {
+        errorQueue.enqueue(message)
+        logger.warn(message, "message added to errorQueue")
+    }
+    logger.trace("_processInsert()")
+}
 
 export function processQueue() {
-
-    function _processInsert() {
-        const message = queue.dequeue()
-        const inserted = chatMessagesModel.insert(message)
-        if (!inserted) {
-            console.error("failed to insert message")
-            errorQueue.enqueue(message)
-        }
-    }
-
+    console.log("processQueue run")
     while (!queue.isEmpty) {
+        console.log("queue has items!!")
+        if (queue.size > largestQueueSize) {
+            largestQueueSize = queue.size
+            logger.info("new largest queue size: " + largestQueueSize);
+        }
         setTimeout(_processInsert, QUEUE_WAIT_TIME)
     }
 }
 
-function queueInfo() {
+export function getQueueInfo() {
     const queued = queue.size;
     const errors = errorQueue.size;
     console.log(`queued: ${queued}, errors: ${errors}`);
@@ -159,4 +171,5 @@ function queueInfo() {
 
 export function enqueueMessage(message: imessage) {
     queue.enqueue(message)
+    logger.trace("enqueueMessage()")
 }

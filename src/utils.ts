@@ -1,10 +1,14 @@
-export function getEnvironmentVariable(name: string): string {
-    const value = process.env[name];
+import { logger } from "./logger.js";
 
+
+export function getEnvironmentVariable(name: string): string {
+    // logger.trace(`getEnvironmentVariable(${name}) called`)
+    const value = process.env[name];
     const errorString = "utils.getEnviromentVariable() error: " + name + " is not an in process.env[]"
     if (!value) {
-        console.error(errorString)
-        throw new Error("utils.getEnviromentVariable() error: enviroment variable not found in process.env[]");
+        const err = new Error(errorString);
+        logger.error(err, `process variable: ${name} is not set`);
+        throw err
     }
     return value;
 }
@@ -22,7 +26,6 @@ export class Queue<T> {
         return this.items.length === 0;
     }
     enqueue(item: T) {
-        console.log("enqueueing")
         this.items.push(item)
     }
     dequeue(): T {
@@ -39,6 +42,13 @@ export class Queue<T> {
 }
 
 
+class EventNotRegisteredError extends Error {
+    constructor(message?: string) {
+        super(message || "event is not registered");
+        this.name = "SubscriberError";
+    }
+}
+
 export class Observer {
     private observers: Map<String, Function[]>;
     constructor() {
@@ -51,34 +61,58 @@ export class Observer {
         return this.observers.has(event);
     }
     private updateSubscribers(event: string, subscribers: Array<Function>) {
-        if(!this.observers.has(event)) return false;
+        if (!this.observers.has(event)) {
+            const err = new EventNotRegisteredError()
+            const logMessage = `Observer.updateSubscribers() event: ${event} is not registered`;
+            logger.error(err, logMessage)
+            throw err
+        }
         this.observers.set(event, subscribers);
     }
+
     registerEvent(event: string): boolean {
-        if (this.observers.has(event)) return false;
-            this.observers.set(event, [])
-            return true;
+        if (this.observers.has(event)) {
+            logger.warn(`Observer.registerEvent() event: ${event} is already registered`)
+            return false
+        };
+        this.observers.set(event, [])
+        return true;
     }
 
     unregisterEvent(event: string): boolean {
-        if (!this.observers.has(event)) return false;
+        if (!this.observers.has(event)) {
+            logger.warn(`Observer.unregisterEvent() event: ${event} is not registered`)
+            return false;
+        }
         this.observers.delete(event)
         return true;
     }
 
     subscribe(event: string, callback: Function): boolean {
-        if (!this.observers.has(event)) return false;   
+        if (!this.observers.has(event)) {
+            const err = new EventNotRegisteredError()
+            const logMessage = `Observer.subscribe() ${event} is not registered`;
+
+            logger.error(err, logMessage)
+            throw err
+        }
         this.observers.get(event).push(callback);
         return true;
     }
 
     unsubscribe(event: string, callback: Function): boolean {
-        if (!this.observers.has(event)) { return false; }
+        if (!this.observers.has(event)) {
+            const err = new EventNotRegisteredError()
+            const logMessage = `Observer.unsubscribe() ${event} is not registered`;
+
+            logger.error(err, logMessage)
+            return false;
+        }
         const subscribers = this.observers.get(event)
-        let callbackRemoved = false;   
+        let callbackRemoved = false;
         const updated = subscribers.filter((elem) => {
             if (elem === callback) {
-                callbackRemoved = true;   
+                callbackRemoved = true;
                 return false;
             }
             return true;
@@ -88,12 +122,18 @@ export class Observer {
     }
 
     fire(event: string, args: any) {
-        if (!this.observers.has(event)) return;
+        if (!this.observers.has(event)) {
+            const err = new EventNotRegisteredError()
+            const logMessage = `Observer.fire() event: ${event} is not registered`
+            logger.error(err, logMessage)
+            return;
+        }
         const subscribers = this.observers.get(event)
         let returnArgs = args
         subscribers.forEach((callback) => {
-           returnArgs = callback(args)
+            returnArgs = callback(args)
         })
+
         return returnArgs
     }
 }
