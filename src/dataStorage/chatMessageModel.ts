@@ -138,8 +138,12 @@ function _processInsert() {
         errorQueue.enqueue(message)
     }
 }
-
+let queueHigh = 0;
 export function processQueue() {
+    if(queue.size > queueHigh){
+        queueHigh = queue.size
+        logger.info("new queue.size record: " + queueHigh)
+    }
     if (!queue.isEmpty) {
         _processInsert();
     }
