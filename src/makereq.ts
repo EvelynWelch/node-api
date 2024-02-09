@@ -10,7 +10,20 @@ const testMessage = {
     message: "this is a test message",
 }
 
+<<<<<<< HEAD
 const baseURL = 'http://localhost:' + getEnvironmentVariable('EXPRESS_PORT');
+=======
+const baseURL = 'http://localhost:8008'
+// const baseURL = '127.0.2:5432'
+async function q() {
+    try{
+        const resp = await axios.get(baseURL)
+        console.log(resp)
+    } catch (error) {
+        console.log(error)
+    }
+}
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
 
 
 async function chatMessagePut (insert: imessage) {
@@ -23,7 +36,11 @@ async function chatMessagePut (insert: imessage) {
 }
 
 const client = new tmi.Client({
+<<<<<<< HEAD
 	channels: [ 'supertf', 'iitztimmy' ]
+=======
+	channels: [ 'supertf','emongg' ]
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
 });
 
 client.connect();
@@ -35,9 +52,13 @@ client.on('message', (channel: string, tags: any, message: string, self: any) =>
         channel: channel,
         message: message,
     };
+<<<<<<< HEAD
     chatMessagePut(data);
     count++
     console.log(count);
+=======
+    cmPut(data);
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
     // console.log({...tags});
 });
 

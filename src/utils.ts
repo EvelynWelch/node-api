@@ -26,9 +26,14 @@ export class Queue<T> {
         return this.items.length === 0;
     }
     enqueue(item: T) {
+<<<<<<< HEAD
+=======
+        // console.log("enqueueing")
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
         this.items.push(item)
     }
     dequeue(): T {
+        console.log(`dequeued: ${this.size -1} elements remaining`)
         return this.items.shift()
     }
     peek(): T {
@@ -61,20 +66,28 @@ export class Observer {
         return this.observers.has(event);
     }
     private updateSubscribers(event: string, subscribers: Array<Function>) {
+<<<<<<< HEAD
         if (!this.observers.has(event)) {
             const err = new EventNotRegisteredError()
             const logMessage = `Observer.updateSubscribers() event: ${event} is not registered`;
             logger.error(err, logMessage)
             throw err
         }
+=======
+        if (!this.observers.has(event)) return false;
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
         this.observers.set(event, subscribers);
     }
 
     registerEvent(event: string): boolean {
+<<<<<<< HEAD
         if (this.observers.has(event)) {
             logger.warn(`Observer.registerEvent() event: ${event} is already registered`)
             return false
         };
+=======
+        if (this.observers.has(event)) return false;
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
         this.observers.set(event, [])
         return true;
     }
@@ -89,6 +102,7 @@ export class Observer {
     }
 
     subscribe(event: string, callback: Function): boolean {
+<<<<<<< HEAD
         if (!this.observers.has(event)) {
             const err = new EventNotRegisteredError()
             const logMessage = `Observer.subscribe() ${event} is not registered`;
@@ -96,6 +110,9 @@ export class Observer {
             logger.error(err, logMessage)
             throw err
         }
+=======
+        if (!this.observers.has(event)) return false;
+>>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
         this.observers.get(event).push(callback);
         return true;
     }
