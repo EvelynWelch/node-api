@@ -102,12 +102,7 @@ class ChatMessageModel {
 
     async insert(message: imessage) {
         this.fireBeforeInsert(message)
-<<<<<<< HEAD
         logger.trace('ChatMessageModel.insert()')
-=======
-        // console.log(`inserting: ${message}`);
-        console.log("***** inserting *****")
->>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
         let success = false;
         await this.db.transaction(async action => {
             const now = Date.now();
@@ -128,13 +123,7 @@ class ChatMessageModel {
 }
 
 
-<<<<<<< HEAD
-
 export const chatMessagesModel = new ChatMessageModel(db);
-
-=======
-export const chatMessagesModel = new ChatMessageModel(db);
->>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
 
 
 
@@ -142,59 +131,26 @@ const queue = new Queue<imessage>();
 
 const errorQueue = new Queue<imessage>();
 
-<<<<<<< HEAD
-const QUEUE_WAIT_TIME = Number(getEnvironmentVariable("QUEUE_DELAY_MS")) || 100;
-
-console.log(QUEUE_WAIT_TIME)
-
-let largestQueueSize = 0;
+const QUEUE_WAIT_TIME = 100;
 
 function _processInsert() {
-
+    logger.trace("_processInsert()");
     const message = queue.dequeue()
     const inserted = chatMessagesModel.insert(message)
     if (!inserted) {
+        logger.warn(message, "_processInsert() failed to insert, messaged added to error queue")
         errorQueue.enqueue(message)
-        logger.warn(message, "message added to errorQueue")
     }
-    logger.trace("_processInsert()")
 }
 
 export function processQueue() {
-    console.log("processQueue run")
-    while (!queue.isEmpty) {
-        console.log("queue has items!!")
-        if (queue.size > largestQueueSize) {
-            largestQueueSize = queue.size
-            logger.info("new largest queue size: " + largestQueueSize);
-        }
-        setTimeout(_processInsert, QUEUE_WAIT_TIME)
-=======
-const QUEUE_WAIT_TIME = 200;
-
-export function processQueue() {
-    function _processInsert() {
-        console.log("queue attempting insert");
-        const message = queue.dequeue()
-        const inserted = chatMessagesModel.insert(message)
-        if (!inserted) {
-            console.error("failed to insert message")
-            errorQueue.enqueue(message)
-        }
-    }
     if (!queue.isEmpty) {
         _processInsert();
->>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
     }
-
     setTimeout(processQueue, QUEUE_WAIT_TIME)
 }
 
-<<<<<<< HEAD
 export function getQueueInfo() {
-=======
-export function queueInfo() {
->>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
     const queued = queue.size;
     const errors = errorQueue.size;
     console.log(`queued: ${queued}, errors: ${errors}`);
@@ -204,13 +160,5 @@ export function queueInfo() {
 export function enqueueMessage(message: imessage) {
 
     queue.enqueue(message)
-<<<<<<< HEAD
     logger.trace("enqueueMessage()")
 }
-=======
-    console.log(`queue.size: ${queue.size}`);
-}
-
-
-// export { chatMessagesModel, imessage }
->>>>>>> 838a35880d3a7dbf1605e8d2262367e25188e5af
