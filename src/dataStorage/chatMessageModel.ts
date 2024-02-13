@@ -133,12 +133,8 @@ const QUEUE_CHUNK_SIZE = Number(getEnvironmentVariable("QUEUE_CHUNK_SIZE")) || 5
 
 function _processInsert() {
     logger.trace("_processInsert()");
-    if (queue.isEmpty) {
-        // TODO: figure out why this wouldn't stop it.
-        logger.debug("queue.isEmtpy")
-        return
-    }
     for (let i = 0; i < QUEUE_CHUNK_SIZE; i++) {
+        if (queue.isEmpty) return
         const message = queue.dequeue();
         const inserted = chatMessagesModel.insert(message)
         if (!inserted) {
@@ -179,7 +175,8 @@ export function processQueue() {
     }
     if (!queue.isEmpty) {
         // processInserts(0);
-        if(queue.size > QUEUE_CHUNK_SIZE) _processInsert()
+        // if(queue.size > QUEUE_CHUNK_SIZE) _processInsert()
+        _processInsert()
         
     }
     // TODO: test to see if this setTimeout will pause the ability to enqueue requests
