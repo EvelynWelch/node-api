@@ -118,9 +118,7 @@ class ChatMessageModel {
     }
 }
 
-
 export const chatMessagesModel = new ChatMessageModel(db);
-
 
 
 const queue = new Queue<imessage>();
@@ -128,27 +126,65 @@ const queue = new Queue<imessage>();
 const errorQueue = new Queue<imessage>();
 
 const QUEUE_DELAY_MS = Number(getEnvironmentVariable("QUEUE_DELAY_MS")) || 100;
+// const QUEUE_DELAY_MS = 10000
+
+const QUEUE_CHUNK_SIZE = Number(getEnvironmentVariable("QUEUE_CHUNK_SIZE")) || 50
+// const QUEUE_CHUNK_SIZE = 5
 
 function _processInsert() {
     logger.trace("_processInsert()");
-    const message = queue.dequeue()
-    const inserted = chatMessagesModel.insert(message)
-    if (!inserted) {
-        logger.warn(message, "_processInsert() failed to insert, messaged added to error queue")
-        errorQueue.enqueue(message)
+    if (queue.isEmpty) {
+        // TODO: figure out why this wouldn't stop it.
+        logger.debug("queue.isEmtpy")
+        return
+    }
+    for (let i = 0; i < QUEUE_CHUNK_SIZE; i++) {
+        const message = queue.dequeue();
+        const inserted = chatMessagesModel.insert(message)
+        if (!inserted) {
+            logger.warn(message, "_processInsert() failed to insert, messaged added to error queue")
+            errorQueue.enqueue(message)
+        }
+
     }
 }
+
+
+
+
+// function processInsert() {
+//     const message = queue.dequeue();
+//     const inserted = chatMessagesModel.insert(message)
+//     if (!inserted) {
+//         logger.warn(message, "_processInsert() failed to insert, messaged added to error queue")
+//         errorQueue.enqueue(message)
+//     }
+// }
+
+// function processInserts(pos: number) {
+//     logger.trace(`processInsert(${pos}) called`)
+
+//     if (pos < QUEUE_CHUNK_SIZE) processInsert()
+//     processInserts(pos + 1)
+// }
+
+
 let queueHigh = 0;
+
 export function processQueue() {
-    if(queue.size > queueHigh){
+    logger.trace("processQueue() started")
+    if (queue.size > queueHigh) {
         queueHigh = queue.size
         logger.info("new queue.size record: " + queueHigh)
     }
     if (!queue.isEmpty) {
-        _processInsert();
+        // processInserts(0);
+        if(queue.size > QUEUE_CHUNK_SIZE) _processInsert()
+        
     }
     // TODO: test to see if this setTimeout will pause the ability to enqueue requests
     setTimeout(processQueue, QUEUE_DELAY_MS)
+
 }
 
 export function getQueueInfo() {

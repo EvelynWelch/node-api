@@ -1,3 +1,6 @@
+// TODO: create a queue that delegates its functions to workers.
+// TODO: add a bulk dequeuer'
+
 import { logger } from "./logger.js";
 
 

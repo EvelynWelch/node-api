@@ -24,7 +24,7 @@ async function chatMessagePut (insert: imessage) {
 }
 
 const client = new tmi.Client({
-	channels: [ 'supertf', 'iitztimmy', 'aceu', '39daph', 'scarra' ]
+	channels: [ 'supertf', 'iitztimmy', 'aceu', '39daph', 'scarra', 'a_seagull']
 });
 
 client.connect();
