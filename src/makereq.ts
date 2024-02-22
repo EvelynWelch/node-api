@@ -23,19 +23,28 @@ async function chatMessagePut (insert: imessage) {
     }
 }
 
-const client = new tmi.Client({
-	channels: [ 'supertf', 'iitztimmy', 'aceu', '39daph', 'scarra', 'a_seagull']
-});
+// const client = new tmi.Client({
+// 	channels: [ 'supertf', 'iitztimmy', 'aceu', '39daph', 'scarra', 'a_seagull']
+// });
 
-client.connect();
+// client.connect();
 
-client.on('message', (channel: string, tags: any, message: string, self: any) => {
-    const data = {
-        display_name: tags['display-name'],
-        user_id: tags['user-id'],
-        channel: channel,
-        message: message,
-    };
-    chatMessagePut(data);
-});
+// client.on('message', (channel: string, tags: any, message: string, self: any) => {
+//     const data = {
+//         display_name: tags['display-name'],
+//         user_id: tags['user-id'],
+//         channel: channel,
+//         message: message,
+//     };
+//     chatMessagePut(data);
+// });
 
+
+const data = {
+    display_name: "test_user",
+    user_id: "123456",
+    channel: "test_channel",
+    message: "".padStart(500, "*")
+}
+
+await chatMessagePut(data)

@@ -25,7 +25,7 @@ class ChatMessageModel {
 
     constructor(db: knex.Knex) {
         this.db = db;
-        this.tableName = 'chat_messages';
+        this.tableName = 'twitch_messages';
         // this.tableName ? tableName : 'chat_messages';
         // this.obs ? obs : new Observer();
         this.obs = new Observer();
@@ -38,7 +38,7 @@ class ChatMessageModel {
         this.prepareObs()
         // this._setHasTable();
         this._createTable();
-        // this.hasTable = this._createTable();
+
     }
 
     private prepareObs() {
@@ -76,7 +76,7 @@ class ChatMessageModel {
             table.increments('id');
             table.string('user_id');
             table.string('display_name');
-            table.string('message');
+            table.string('message', 500);
             table.string('channel');
             // table.timestamp('created_at');
         })
